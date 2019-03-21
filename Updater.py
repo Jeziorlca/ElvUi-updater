@@ -1,5 +1,6 @@
 #from lxml import html
 import requests
+import re
 #Base Settings
 url = "https://www.tukui.org/download.php?ui=elvui"
 game_location = "E:\\Nowy folder\\World of Warcraft\\"
@@ -13,14 +14,12 @@ file_location = "_retail_\\Interface\\AddOns\\ElvUI\\ElvUI.toc"
 #    return True
 # Function that checks current version available
 
-###### DONE:######
-#def installed_version ():
-    #Opens file and checks the current version installed of ElvUi
-#    f = open (game_location + file_location, "r")
-#    tmp = f.readlines()[2]
-#    return tmp[12:17:1]
-#print (installed_version())
-##################
+def installed_version ():
+    pattern = re.compile("## Version: "r"\d\d\.\d\d")
+    for i, line in enumerate(open (game_location + file_location)):
+        for match in re.finditer(pattern, line):          
+            return match.group().split(":")[-1].strip()
+print(installed_version())
 
 #if installed_version() == get_version():
 #    print ("You are up to date")
