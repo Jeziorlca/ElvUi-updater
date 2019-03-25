@@ -10,6 +10,12 @@ url = "https://www.tukui.org/download.php?ui=elvui"
 page = requests.get(url)
 addons_location = "e:\\nowy folder\\World of Warcraft\\_retail_\\Interface\\AddOns\\"
 elviu_file_location = "ElvUI\\ElvUI.toc"
+working_dir = 'C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\'
+
+if os.path.exists (working_dir) == True:
+        print('working dir exists')
+else:
+        os.makedirs(working_dir) #creates working directory
 
 #Function that checks what is the latest version available to download on ElvUI website
 def get_version():
@@ -26,23 +32,25 @@ def installed_version ():
             return match.group().split(":")[-1].strip()
 
 #Function that downloads the latest version of ElvUI
+#This function needs to be updated so it will dynamicly know the script working folder so it can be moved freely between PCs
 def download_update():
     url = 'https://www.tukui.org/downloads/elvui-'+get_version() 
     r = requests.get(url)
-    with open('C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\ElvUI-'+get_version(), 'wb') as f:  
+    with open(working_dir + 'ElvUI-' + get_version(), 'wb') as f:  
         f.write(r.content)
 
 #Here we check if the version installed is the same that the one we can download.
 if installed_version() == get_version()[0:5]:
     print ("You are up to date")
+    distutils.dir_util.remove_tree (working_dir)
 else:
-    print ("Downloading latest version "+get_version()[0:5])
+    print ("Downloading latest version "+ get_version()[0:5])
     download_update() #downloads update 
     print ("Extracting new version")
-    zip_ref = zipfile.ZipFile('C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\ElvUI-'+get_version(), 'r') #Extracts update
-    zip_ref.extractall('C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\'+get_version())
+    zip_ref = zipfile.ZipFile(working_dir + 'ElvUI-' + get_version(), 'r') #Extracts update
+    zip_ref.extractall(working_dir + get_version())
     zip_ref.close()
     print ("Updating ElvUi")
-    distutils.dir_util.copy_tree('C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\'+get_version() , addons_location) #Moves update from a temp folder to addons
-    distutils.dir_util.remove_tree ('C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\') #clears the temp
+    distutils.dir_util.copy_tree(working_dir + get_version() , addons_location) #Moves update from a temp folder to addons
+    distutils.dir_util.remove_tree (working_dir) #clears the temp
     print ("Update complete")
