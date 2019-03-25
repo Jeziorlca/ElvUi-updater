@@ -13,7 +13,7 @@ elviu_file_location = "ElvUI\\ElvUI.toc"
 working_dir = os.getcwd() + '\\temp\\'
 
 if os.path.exists (working_dir) == True: #Check if working directory exists
-        print('working dir exists')
+        pass
 else:
         os.makedirs(working_dir) #creates working directory
 
@@ -42,7 +42,6 @@ def download_update():
 #Here we check if the version installed is the same that the one we can download.
 if installed_version() == get_version()[0:5]:
     print ("You are up to date")
-    print (working_dir)
     distutils.dir_util.remove_tree (working_dir)
 else:
     print ("Downloading latest version "+ get_version()[0:5])
