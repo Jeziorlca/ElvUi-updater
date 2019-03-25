@@ -41,6 +41,7 @@ def download_update():
 #Here we check if the version installed is the same that the one we can download.
 if installed_version() == get_version()[0:5]:
     print ("You are up to date")
+    input("Press enter to exit ;)")
 else:
     print ("Downloading latest version "+ get_version()[0:5])
     download_update() #downloads update 
@@ -52,3 +53,4 @@ else:
     distutils.dir_util.copy_tree(working_dir + get_version() , addons_location) #Moves update from a temp folder to addons
     distutils.dir_util.remove_tree (working_dir) #clears the temp
     print ("Update complete")
+    input("Press enter to exit ;)")
