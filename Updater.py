@@ -32,7 +32,6 @@ def installed_version ():
             return match.group().split(":")[-1].strip()
 
 #Function that downloads the latest version of ElvUI
-#This function needs to be updated so it will dynamicly know the script working folder so it can be moved freely between PCs
 def download_update():
     url = 'https://www.tukui.org/downloads/elvui-'+get_version() 
     r = requests.get(url)
@@ -42,7 +41,6 @@ def download_update():
 #Here we check if the version installed is the same that the one we can download.
 if installed_version() == get_version()[0:5]:
     print ("You are up to date")
-    distutils.dir_util.remove_tree (working_dir)
 else:
     print ("Downloading latest version "+ get_version()[0:5])
     download_update() #downloads update 
