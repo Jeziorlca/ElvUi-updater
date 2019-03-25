@@ -1,48 +1,48 @@
 import requests
 import re
-import os.path
+import os
+import zipfile
+import distutils
+from distutils import dir_util
+
 #Base Settings
 url = "https://www.tukui.org/download.php?ui=elvui"
 page = requests.get(url)
-game_location = "d:\\World of Warcraft\\"
-file_location = "_retail_\\Interface\\AddOns\\ElvUI\\ElvUI.toc"
+addons_location = "e:\\nowy folder\\World of Warcraft\\_retail_\\Interface\\AddOns\\"
+elviu_file_location = "ElvUI\\ElvUI.toc"
 
+#Function that checks what is the latest version available to download on ElvUI website
 def get_version():
-    pattern = "/downloads/elvui-"r"\d\d\.\d\d"
+    pattern = "/downloads/elvui-"r"\d\d\.\d\d...."
     for i, line in enumerate(page.text.split("\n")):
         for match in re.finditer(pattern, line):          
-            return match.group().split("-")[-1].strip()    
+            return match.group().split("-")[-1].strip()  
 
-print (get_version())
-
-def download_file_name():
-    pattern = "/downloads/elvui-"r"\d\d\.\d\d"
-    for i, line in enumerate(page.text.split("\n")):
-        for match in re.finditer(pattern, line):          
-            return match.group().split('/')[-1]
-
-print (download_file_name())
-print ('https://www.tukui.org/downloads/'+download_file_name()+'.zip')
-
+#Function that checks what ElvUI version you have installed in your WoW addons folder
 def installed_version ():
     pattern = re.compile("## Version: "r"\d\d\.\d\d")
-    for i, line in enumerate(open (game_location + file_location)):
+    for i, line in enumerate(open (addons_location + elviu_file_location)):
         for match in re.finditer(pattern, line):          
             return match.group().split(":")[-1].strip()
-print(installed_version())
 
+#Function that downloads the latest version of ElvUI
 def download_update():
-    url = 'https://www.tukui.org/downloads/'+download_file_name()+'.zip' 
+    url = 'https://www.tukui.org/downloads/elvui-'+get_version() 
     r = requests.get(url)
-    with open('C:\\Users\\Jezior\\source\\repos\\ElvUi-updater\\'+download_file_name()+'.zip', 'wb') as f:  
+    with open('C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\ElvUI-'+get_version(), 'wb') as f:  
         f.write(r.content)
 
-#if installed_version() == get_version():
-#    print ("You are up to date")
-#else:
-#download latest package and extract to "_retail_\Interface\AddOns"
-  #  print ("version will be updated")
-
-#if os.path.exists(game_location + file_location):
-#   else:
-#        print ("Could not find ElvUI.toc")
+#Here we check if the version installed is the same that the one we can download.
+if installed_version() == get_version()[0:5]:
+    print ("You are up to date")
+else:
+    print ("Downloading latest version "+get_version()[0:5])
+    download_update() #downloads update 
+    print ("Extracting new version")
+    zip_ref = zipfile.ZipFile('C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\ElvUI-'+get_version(), 'r') #Extracts update
+    zip_ref.extractall('C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\'+get_version())
+    zip_ref.close()
+    print ("Updating ElvUi")
+    distutils.dir_util.copy_tree('C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\'+get_version() , addons_location) #Moves update from a temp folder to addons
+    distutils.dir_util.remove_tree ('C:\\Users\\pije\\Documents\\ElvUi-updater\\temp\\') #clears the temp
+    print ("Update complete")
