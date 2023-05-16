@@ -4,12 +4,12 @@ import os
 import zipfile
 import distutils
 from distutils import dir_util
-
+import tkinter
 #Base Settings
 url = "https://www.tukui.org/download.php?ui=elvui"
 page = requests.get(url)
-addons_location = "e:\\nowy folder\\World of Warcraft\\_retail_\\Interface\\AddOns\\"
-elviu_file_location = "ElvUI\\ElvUI.toc"
+addons_location = "e:\\World of Warcraft\\_retail_\\Interface\\AddOns\\"
+elviu_file_location = "ElvUI\\ElvUI_Mainline.toc"
 working_dir = os.getcwd() + '\\temp\\'
 
 if os.path.exists (working_dir) == True: #Check if working directory exists
@@ -51,6 +51,7 @@ else:
     zip_ref.close()
     print ("Updating ElvUi")
     distutils.dir_util.copy_tree(working_dir + get_version() , addons_location) #Moves update from a temp folder to addons
-    distutils.dir_util.remove_tree (working_dir) #clears the temp
+    #distutils.dir_util.remove_tree (working_dir) #clears the temp
     print ("Update complete")
     input("Press enter to exit :")
+# dupa
