@@ -2,9 +2,7 @@ import requests
 import re
 import os
 import zipfile
-import distutils
-from distutils import dir_util
-import tkinter
+import shutil
 #Base Settings
 url = "https://www.tukui.org/download.php?ui=elvui"
 page = requests.get(url)
@@ -41,7 +39,6 @@ def download_update():
 #Here we check if the version installed is the same that the one we can download.
 if installed_version() == get_version()[0:5]:
     print ("You are up to date")
-    input("Press enter to exit :")
 else:
     print ("Downloading latest version "+ get_version()[0:5])
     download_update() #downloads update 
@@ -50,8 +47,7 @@ else:
     zip_ref.extractall(working_dir + get_version())
     zip_ref.close()
     print ("Updating ElvUi")
-    distutils.dir_util.copy_tree(working_dir + get_version() , addons_location) #Moves update from a temp folder to addons
-    #distutils.dir_util.remove_tree (working_dir) #clears the temp
+    shutil.copytree(working_dir + get_version() , addons_location, dirs_exist_ok=True) #Moves update from a temp folder to addons
+    print ("Removing temp")
+    shutil.rmtree(working_dir)
     print ("Update complete")
-    input("Press enter to exit :")
-# dupa
